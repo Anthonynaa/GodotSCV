@@ -1,14 +1,15 @@
 extends RigidBody
 
-
 const ACCEL = 5.0
 const DEACCEL = 20.0
 const MAX_SPEED = 2.0
 const ROT_SPEED = 1.0
+const DEATH_SPIN_SPEED = 30.0  # How fast they spin when dying
 
 var prev_advance = false
 var dying = false
 var rot_dir = 4
+var death_spin_axis = Vector3()
 
 onready var gravity = ProjectSettings.get_setting("physics/3d/default_gravity") * ProjectSettings.get_setting("physics/3d/default_gravity_vector")
 
@@ -25,6 +26,14 @@ func _integrate_forces(state):
 	var up = -g.normalized()
 
 	if dying:
+		# Spin rapidly while dying
+		var spin_axis = death_spin_axis
+		if spin_axis == Vector3():
+			# Create random spin axis
+			spin_axis = Vector3(randf() - 0.5, randf() - 0.5, randf() - 0.5).normalized()
+			death_spin_axis = spin_axis
+		
+		state.set_angular_velocity(spin_axis * DEATH_SPIN_SPEED)
 		state.set_linear_velocity(lv)
 		return
 
@@ -36,7 +45,14 @@ func _integrate_forces(state):
 			if cc is preload("res://player/bullet/bullet.gd") and cc.enabled:
 				set_mode(MODE_RIGID)
 				dying = true
-				state.set_angular_velocity(-dp.cross(up).normalized() * 33.0)
+				
+				# Create spin axis perpendicular to hit direction
+				death_spin_axis = -dp.cross(up).normalized()
+				
+				# Apply initial spin
+				state.set_angular_velocity(death_spin_axis * DEATH_SPIN_SPEED)
+				
+				# Play death animations
 				get_node("AnimationPlayer").play("impact")
 				get_node("AnimationPlayer").queue("explode")
 				cc.enabled = false
