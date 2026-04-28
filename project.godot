@@ -8,6 +8,40 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "AudioStreamPlayer",
+"class": "AudioStreamPlayerADSR",
+"language": "GDScript",
+"path": "res://addons/midi/ADSR.gd"
+}, {
+"base": "Reference",
+"class": "Bank",
+"language": "GDScript",
+"path": "res://addons/midi/Bank.gd"
+}, {
+"base": "Node",
+"class": "MidiPlayer",
+"language": "GDScript",
+"path": "res://addons/midi/MidiPlayer.gd"
+}, {
+"base": "Reference",
+"class": "SMF",
+"language": "GDScript",
+"path": "res://addons/midi/SMF.gd"
+}, {
+"base": "Reference",
+"class": "SoundFont",
+"language": "GDScript",
+"path": "res://addons/midi/SoundFont.gd"
+} ]
+_global_script_class_icons={
+"AudioStreamPlayerADSR": "",
+"Bank": "",
+"MidiPlayer": "res://addons/midi/icon.png",
+"SMF": "",
+"SoundFont": ""
+}
+
 [application]
 
 config/name="GodotSCV"
@@ -16,6 +50,11 @@ It uses similar code to the 2D platformer, but implemented in 3D.
 It also features audio reverberation (it sounds echo-y)."
 run/main_scene="res://stage/stage.tscn"
 config/icon="res://icon.png"
+
+[display]
+
+window/size/width=640
+window/size/height=480
 
 [gdnative]
 
@@ -144,7 +183,7 @@ quality/driver/fallback_to_gles2=true
 quality/intended_usage/framebuffer_allocation=3
 vram_compression/import_etc=true
 quality/shadows/filter_mode=2
-quality/filters/anisotropic_filter_level=16
-quality/filters/msaa=2
+quality/filters/anisotropic_filter_level=1
+quality/filters/use_nearest_mipmap_filter=true
 quality/filters/anisotropic_filter_level.mobile=4
 quality/filters/msaa.mobile=0

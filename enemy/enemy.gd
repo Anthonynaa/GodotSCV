@@ -41,6 +41,7 @@ func _integrate_forces(state):
 				get_node("AnimationPlayer").queue("explode")
 				cc.enabled = false
 				get_node("SoundHit").play()
+				add_score(50)
 				return
 
 	var col_floor = get_node("Armature/RayFloor").is_colliding()
@@ -75,3 +76,9 @@ func _integrate_forces(state):
 
 func _die():
 	queue_free()
+	
+func add_score(amount):
+	# Find the player and add score
+	var player = get_tree().get_root().find_node("Player", true, false)
+	if player and player.has_method("add_score"):
+		player.add_score(50)

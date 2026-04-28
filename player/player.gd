@@ -9,14 +9,14 @@ enum Anim {
 const SHOOT_TIME = 1.5
 const SHOOT_SCALE = 2
 const CHAR_SCALE = Vector3(0.3, 0.3, 0.3)
-const MAX_SPEED = 4.5
+const MAX_SPEED = 5
 const TURN_SPEED = 40
 const JUMP_VELOCITY = 8.5
 const BULLET_SPEED = 20
 const AIR_IDLE_DEACCEL = false
-const ACCEL = 14.0
-const DEACCEL = 14.0
-const AIR_ACCEL_FACTOR = 0.4
+const ACCEL = 20.0
+const DEACCEL = 20.0
+const AIR_ACCEL_FACTOR = 0.6
 const SHARP_TURN_THRESHOLD = 140
 
 var movement_dir = Vector3()
@@ -24,6 +24,12 @@ var linear_velocity = Vector3()
 var jumping = false
 var prev_shoot = false
 var shoot_blend = 0
+
+var red_coins = 0
+var total_red_coins_needed = 8
+var star_spawned = false
+
+var score = 0
 
 onready var gravity = ProjectSettings.get_setting("physics/3d/default_gravity") * ProjectSettings.get_setting("physics/3d/default_gravity_vector")
 
@@ -155,3 +161,94 @@ func adjust_facing(p_facing, p_target, p_step, p_adjust_rate, current_gn):
 	ang = (ang - a) * s
 
 	return (n * cos(ang) + t * sin(ang)) * p_facing.length()
+
+func collect_red_coin():
+	red_coins += 1
+	print("Red Coins: ", red_coins)  # Debug output
+	update_red_coin_display()
+	if red_coins >= total_red_coins_needed and not star_spawned:
+		spawn_star()
+
+func update_red_coin_display():
+	# Find or create the UI label
+	var ui = get_node("/root/Stage/UI")  # Adjust path as needed
+	if ui and ui.has_node("RedCoinCounter"):
+		ui.get_node("RedCoinCounter").text = "Red coins:" + str(red_coins) + '/8'
+
+func spawn_star():
+	star_spawned = true
+	print("All red coins collected! Star appearing!")
+	
+	# Load and spawn the star
+	var star_scene = preload("res://star/star.tscn")
+	var star = star_scene.instance()
+	
+	# Spawn above the player
+	var spawn_position = global_transform.origin + Vector3(0, 5, 0)
+	star.global_transform.origin = spawn_position
+	
+	# Add to the world (get_parent() gets the level/main scene)
+	get_parent().add_child(star)
+	
+	# Optional: Play fanfare sound
+	play_star_appear_sound()
+
+func play_star_appear_sound():
+	var audio = AudioStreamPlayer.new()
+	var sound = preload("res://star/star.mp3")  # Use your sound path
+	if sound:
+		audio.stream = sound
+		audio.volume_db = -5
+		get_parent().add_child(audio)
+		audio.play()
+		yield(audio, "finished")
+		audio.queue_free()
+
+func collect_star():
+	print("STAR COLLECTED! Level complete!")
+	update_star_display()
+	show_victory_message()
+	
+func update_star_display():
+	# Find or create the UI label
+	var ui = get_tree().get_root().find_node("UI", true, false)
+	if ui and ui.has_node("StarCounter"):
+		ui.get_node("StarCounter").text = "Star:" + "Yes"
+
+func add_score(amount):
+	score += amount
+	print("Score: ", score)  # Debug output
+	update_score_display()
+
+func update_score_display():
+	var ui = get_tree().get_root().find_node("UI", true, false)
+	if ui and ui.has_node("ScoreCounter"):
+		ui.get_node("ScoreCounter").text = "Score: " + str(score)
+
+func show_victory_message():
+	# Create the UI layer
+	var canvas = CanvasLayer.new()
+	get_tree().get_root().add_child(canvas)
+	
+	# Create label
+	var label = Label.new()
+	label.text = "YOU WON!"
+	label.align = Label.ALIGN_CENTER
+	
+	# Apply your font
+	var font = preload("res://VictoryFont.tres")
+	label.add_font_override("font", font)
+	
+	# Center the label
+	label.rect_size = Vector2(400, 100)
+	label.rect_position = Vector2(
+		get_viewport().size.x / 2 - 200,
+		get_viewport().size.y / 2 - 50
+	)
+	
+	# Add to screen
+	canvas.add_child(label)
+	
+	# Wait 3 seconds then remove
+	yield(get_tree().create_timer(3.0), "timeout")
+	canvas.queue_free()

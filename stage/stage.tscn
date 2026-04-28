@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://stage/tiles.tres" type="MeshLibrary" id=1]
 [ext_resource path="res://stage/floor_mesh.tres" type="ArrayMesh" id=2]
@@ -6,6 +6,10 @@
 [ext_resource path="res://enemy/enemy.tscn" type="PackedScene" id=4]
 [ext_resource path="res://player/player.tscn" type="PackedScene" id=5]
 [ext_resource path="res://default_env.tres" type="Environment" id=6]
+[ext_resource path="res://red_coin/red_coin.tscn" type="PackedScene" id=7]
+[ext_resource path="res://stage/stage.gd" type="Script" id=8]
+[ext_resource path="res://addons/midi/MidiPlayer.tscn" type="PackedScene" id=9]
+[ext_resource path="res://addons/myriadpro-black.ttf" type="DynamicFontData" id=10]
 
 [sub_resource type="PhysicsMaterial" id=1]
 friction = 0.0
@@ -31,7 +35,11 @@ extents = Vector3( 13.8646, 10.0961, 18.0951 )
 [sub_resource type="BoxShape" id=8]
 extents = Vector3( 12.887, 10.0961, 4.31324 )
 
+[sub_resource type="DynamicFont" id=9]
+font_data = ExtResource( 10 )
+
 [node name="Stage" type="Spatial"]
+script = ExtResource( 8 )
 __meta__ = {
 "__editor_plugin_screen__": "3D"
 }
@@ -340,3 +348,64 @@ shape = SubResource( 7 )
 [node name="CollisionShape2" type="CollisionShape" parent="SoundArea3"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 38.4845, 5.19958, 26.4846 )
 shape = SubResource( 8 )
+
+[node name="Red coins" type="Spatial" parent="."]
+
+[node name="Red coin 1" parent="Red coins" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 9.42022, -1.42666, 0 )
+
+[node name="Red coin 2" parent="Red coins" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.74529, 0.44417, -12.8772 )
+
+[node name="Red coin 3" parent="Red coins" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 21.0291, 0.434771, 17.0587 )
+
+[node name="Red coin 4" parent="Red coins" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 48.0336, 0.869542, 20.0506 )
+
+[node name="Red coin 5" parent="Red coins" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 48.8525, -7.36499, -2.01538 )
+
+[node name="Red coin 6" parent="Red coins" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 11.7893, -3.24625, 13.3138 )
+
+[node name="Red coin 7" parent="Red coins" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 37.6742, -7.33174, 22.4285 )
+
+[node name="Red coin 8" parent="Red coins" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 53.1909, 0.869542, 15.5969 )
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="RedCoinCounter" type="Label" parent="UI"]
+margin_right = 15.0
+margin_bottom = 14.0
+rect_scale = Vector2( 2, 1 )
+custom_colors/font_color = Color( 1, 0.0980392, 0.0980392, 1 )
+custom_fonts/font = SubResource( 9 )
+text = "Red coins: 0/8"
+
+[node name="StarCounter" type="Label" parent="UI"]
+margin_top = 17.0
+margin_right = 61.0
+margin_bottom = 33.0
+rect_scale = Vector2( 2, 1 )
+custom_colors/font_color = Color( 1, 0.933333, 0.0980392, 1 )
+custom_fonts/font = SubResource( 9 )
+text = "Star: No"
+
+[node name="ScoreCounter" type="Label" parent="UI"]
+margin_top = 34.0
+margin_right = 61.0
+margin_bottom = 51.0
+rect_scale = Vector2( 2, 1 )
+custom_colors/font_color = Color( 0.0980392, 0.564706, 1, 1 )
+custom_fonts/font = SubResource( 9 )
+text = "Score: 0"
+
+[node name="MidiPlayer" parent="." instance=ExtResource( 9 )]
+file = "res://addons/midi/Forest_Templev2.mid"
+playing = true
+loop = true
+soundfont = "res://addons/midi/Super_Mario_64_SF_v1.4.sf2"
+sequence_per_seconds = 60
