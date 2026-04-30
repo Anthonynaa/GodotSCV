@@ -18,12 +18,16 @@ jobs:
        uses: firebelley/godot-export@v7.0.0
        with:
           godot_executable_download_url: "https://downloads.godotengine.org/?version=3.5.3&flavor=stable&slug=x11.64.zip&platform=linux.64"
+          godot_templates_download_url: "https://github.com/godotengine/godot/releases/download/3.5.3-stable/Godot_v3.5.3-stable_export_templates.tpz"
+          relative_project_path: ./
        cache: true
-     env:
     -  name: create release
-       uses: ncipollo/release-action@v1.18.0
-       with:
+      uses: ncipollo/release-action@v1.18.0
+      with:
          token: ${{secrets.GH_TOKEN}}
          generateReleaseNotes: true
          tag: v2.0.0
          artifacts: ${{steps.export.outputs.archive_directory}}/*
+    env:
+      GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
+
