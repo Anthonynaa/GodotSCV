@@ -17,9 +17,7 @@ jobs:
        id: export
        uses: firebelley/godot-export@v7.0.0
        with:
-          godot_executable_download_url:
-https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://godotengine.org/download/archive/3.5.3-stable/&ved=2ahUKEwj7983-rZSUAxWIFBAIHViMLNAQFnoECBgQAQ&usg=AOvVaw0tnUy3DtwwEWbyiGcDWV6w
-       relative_project_path: ./GodotSCV
+          godot_executable_download_url: "https://downloads.godotengine.org/?version=3.5.3&flavor=stable&slug=x11.64.zip&platform=linux.64"
        cache: true
      env:
        GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
