@@ -6,7 +6,7 @@ env:
   GODOT_VERSION: 3.5.3
 jobs:
   jumpy-game:
-    runs-on: ubuntu-25.10
+    runs-on: ubuntu-latest
     permissions:
       contents: write
     name: Export game
