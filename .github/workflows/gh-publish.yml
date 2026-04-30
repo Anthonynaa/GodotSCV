@@ -1,0 +1,32 @@
+name: godot-ci
+on:
+  push:
+    branches: [ main ]
+env:
+  GODOT_VERSION: 3.5.3
+jobs:
+  jumpy-game:
+    runs-on: ubuntu-25.10
+    permissions: write
+  name: Export game
+  steps:
+    -  name: Checkout source code
+       uses: actions/checkout@v3
+
+    -  name: Godot Export
+       id: export
+       uses: firebelley/godot-export@v7.0.0
+       with:
+          godot_executable_download_url:
+https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://godotengine.org/download/archive/3.5.3-stable/&ved=2ahUKEwj7983-rZSUAxWIFBAIHViMLNAQFnoECBgQAQ&usg=AOvVaw0tnUy3DtwwEWbyiGcDWV6w
+       relative_project_path: ./GodotSCV
+       cache: true
+     env:
+       GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
+    -  name: create release
+       uses: ncipollo/release-action@v1.18.0
+       with:
+         token: ${{secrets.GH_TOKEN}}
+         generateReleaseNotes: true
+         tag: v2.0.0
+         artifacts: ${{steps.export.outputs.archive_directory}}/*
